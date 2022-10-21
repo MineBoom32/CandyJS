@@ -2,12 +2,16 @@ const boardDisplay = document.getElementById("gameBoard");
 const playerButtons = document.getElementById("playerButtons");
 const generatedBoard = document.getElementById("board");
 const infoText = document.getElementById("infoText");
+
+//Determines the colors of the player pawns.
 const playerColors = [
     "#FF290B",
     "#3686CA",
     "#51AC20",
     "#FFCC1C"
 ]
+
+//Determine what colors the spaces will have.
 const spaceColors = [
     "#FAB5D1",
     "#FF290B",
@@ -16,13 +20,19 @@ const spaceColors = [
     "#FFCC1C",
     "#97236A"
 ]
+
+//Don't ask.
 const colorList = [1, 2, 3, 4, 5, 0];
+
+//Defines where the pawns should be places relative to the space they're on; this is to prevent overlapping
 const playerOffsets = [
     [-10, -10],
     [10, -10],
     [-10, 10],
     [10, 10]
 ]
+
+//Set names for the four pawns, for selection purposes.
 const pawnNames = [
     "pawnA",
     "pawnB",
@@ -31,13 +41,12 @@ const pawnNames = [
 ]
 
 
-
+// Identify the color display on the card.
 const colorDisplayA = document.getElementById("colorA");
-console.log(colorDisplayA);
 const colorDisplayB = document.getElementById("colorB");
 
 
-
+//Defining the locations and colors of the game board spaces
 class space {
     constructor(color, data, x, y) {
         this.color = color;
@@ -45,7 +54,6 @@ class space {
         this.position = [x, y]
     }
 }
-
 const spaces = [
     new space(1, 1, 25, 475),
     new space(5, 1, 70, 475),
@@ -120,25 +128,23 @@ const spaces = [
     new space(5, 1, 25, 25),
 ]
 
+//Defining the player objects
 class player {
     constructor(pnum) {
-        this.playerId = pnum;
+        this.playerId = pnum; //Used for creating and updating the pawns
         this.position = -1;
         this.stuck = false;
         this.pawn = null;
     }
     move(pos){
         this.position = pos;
-        console.log(this.playerId);
-        if (this.pawn == null) {
+        if (this.pawn == null) { //Create a new pawn if one doesn't exist, should only happen on the first turn
             const pawnHtml = "<circle cx='0' cy='0' r='10' fill='" + playerColors[this.playerId] + "' id='" + pawnNames[this.playerId] + "' stroke='white' stroke-width='3'></circle>"
             generatedBoard.innerHTML += pawnHtml;
-            console.log(pawnHtml);
         }
-        this.pawn = document.getElementById(pawnNames[this.playerId]);
-        console.log(this.position);
-        console.log(spaces[pos].position[0]);
-        console.log(playerOffsets[this.playerId][0]);
+        this.pawn = document.getElementById(pawnNames[this.playerId]); //Reassigns the pawn value; for some reason not doing this every turn breaks the pawns.
+
+        //Move the pawn to its new position on the board.
         this.pawn.setAttribute("cx", spaces[pos].position[0] + playerOffsets[this.playerId][0])
         this.pawn.setAttribute("cy", spaces[pos].position[1] + playerOffsets[this.playerId][1])
     }
@@ -174,25 +180,32 @@ class board {
 
     drawCard(){
         if (this.ended == false) {
-                const colorA = colorList[this.colorRoll(5)];
-            console.log(colorA);
-            colorDisplayA.setAttribute("fill", this.spaceColors[colorA]);
-            colorDisplayB.setAttribute("fill", this.spaceColors[colorA]);
-            console.log(spaceColors);
-            console.log(colorDisplayA);
+
+            //Randomly generate the next color, and show it on the card.
+            const colorA = colorList[this.colorRoll(5)];
+            colorDisplayA.setAttribute("fill", spaceColors[colorA]);
+            colorDisplayB.setAttribute("fill", spaceColors[colorA]);
+
+            //I didn't know if JS had a return statement, so this was my substitute.
             let spaceFound = false;
+
+            //Search through every space ahead of the player to look for a space matching the card's color.
             for (let i = this.players[this.currentPlayer].position + 1; i < spaces.length; i++) {
+
+                //If a valid space has not already been found and moved to, look in the next space.
                 if (spaceFound == false) {
+                    //If the space matches, move to it.
                     if (spaces[i].color == colorA) {
                         spaceFound = true;
                         if (i >= (spaces.length - 1)) {
                             this.ended = true;
                         }
                         this.players[this.currentPlayer].move(i);
-                        console.log(i);
                     }
                 }
             }
+
+            //If the game didn't end on this turn, go to the next player.
             if (this.ended == false) {
                 this.currentPlayer = (this.currentPlayer + 1) % this.players.length;
                 infoText.innerHTML = "Player " + (this.currentPlayer + 1) + ", it's your turn!";
@@ -200,22 +213,26 @@ class board {
                 infoText.innerHTML = "Player " + (this.currentPlayer + 1) + " wins! Refresh to play again."
             }
         }
-        console.log(this.ended);
     }
 }
 
 var gameBoard;
 
+//Start a new game with a number of players defined by the "players" input.
 function startGame(players) {
     gameBoard = new board(players);
-    console.log(gameBoard.players);
+
+    //Place all the spaces on the board
     spaces.forEach((space) => {
         const spaceHtml = "<circle cx='" + space.position[0] + "' cy='" + space.position[1] + "' r='20' fill='" + spaceColors[space.color] + "' stroke='white' stroke-width='5'></circle>"
         generatedBoard.innerHTML += spaceHtml;
     })
+
+    //Unhides the board, and hides the player selection buttons.
     boardDisplay.style.display = "block";
     playerButtons.style.display = "none";
     infoText.innerHTML = "Player 1, it's your turn!"
 }
 
+//Hides the board until after the game starts
 boardDisplay.style.display = "none";
