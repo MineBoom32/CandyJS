@@ -197,7 +197,7 @@ class board {
                 this.currentPlayer = (this.currentPlayer + 1) % this.players.length;
                 infoText.innerHTML = "Player " + (this.currentPlayer + 1) + ", it's your turn!";
             } else {
-                infoText.innerHTML = "Player " + (this.currentPlayer + 1) + " wins!"
+                infoText.innerHTML = "Player " + (this.currentPlayer + 1) + " wins! Refresh to play again."
             }
         }
         console.log(this.ended);
