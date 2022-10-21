@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>CandyJS</h1>
+    <h1 id="infoText">How many players?</h1>
+    <div id="gameBoard">
+        <svg id="board" width="500" height="500"></svg>
+        <svg id="card" width="200" height="300" onclick="gameBoard.drawCard()">
+            <rect id="colorA" x="50" y="30" rx="20" ry="20" width="100" height="100" fill="white"></rect>
+            <rect id="colorB" x="50" y="170" rx="20" ry="20" width="100" height="100" fill="white"></rect>
+            <text id="drawtext" x="25" y="160">Click to draw</text>
+        </svg>
+    </div>
+    <div id="playerButtons">
+        <button id="startButton" onclick="startGame(2)">2</button>
+        <button id="startButton" onclick="startGame(3)">3</button>
+        <button id="startButton" onclick="startGame(4)">4</button>
+    </div>
+
+    <script src="candy.js"></script>
+</body>
+</html>
